@@ -1,0 +1,5 @@
+yarn.lock
+**/.DS_Store
+midis
+dist
+node_modules
