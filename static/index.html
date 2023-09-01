@@ -42,6 +42,11 @@
       </button>
     </div>
 
+    <div class="col colst">
+      <div class="inpl"><span>Pitch Adder</span></div>
+      <input type="number" id="pc" value="0" />
+    </div>
+
     <div class="col">
       <button type="button" style="background: #e7685c" class="fl" id="play">
         Play
@@ -57,14 +62,6 @@
         src: url(https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2)
           format("woff2");
         font-weight: 700;
-        font-style: normal;
-      }
-
-      @font-face {
-        font-family: LINESeedKR-Rg;
-        src: url(https://cdn.jsdelivr.net/gh/wizfile/font/LINESeedKR-Rg.eot);
-        src: url(https://cdn.jsdelivr.net/gh/wizfile/font/LINESeedKR-Rg.woff)
-          format("woff");
         font-style: normal;
       }
 
@@ -93,10 +90,11 @@
       .inpl {
         display: flex;
         align-items: center;
-        background: #333;
+        background: #555;
         padding: 7px 15px;
         border: 2px solid #777;
         border-radius: 6px 0px 0px 6px;
+        font-family: LINESeedKR-Th;
       }
 
       input {
@@ -206,11 +204,13 @@
       stopBtn.addEventListener("click", () => {
         setState("stop");
         ipcRenderer.invoke("stop");
+        document.getElementById("pc").removeAttribute("disabled");
       });
       playBtn.addEventListener("click", () => {
         if (currentMidi == null) return setState("No midi loaded");
         setState("play");
         ipcRenderer.invoke("play");
+        document.getElementById("pc").setAttribute("disabled", "true");
       });
       loadURL.addEventListener("click", () => {
         let url = urlinput.value;
@@ -234,6 +234,10 @@
         };
         reader.readAsArrayBuffer(files[0]);
         setState("Reading midi file...");
+      });
+
+      document.getElementById("pc").addEventListener("change", (e) => {
+        ipcRenderer.invoke("pit", parseInt(e.target.value));
       });
     </script>
   </body>

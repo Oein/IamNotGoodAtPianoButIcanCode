@@ -3,10 +3,15 @@ console.log("Running");
 import easymidi from "easymidi";
 import { Midi } from "@tonejs/midi";
 import { Note } from "@tonejs/midi/dist/Note";
-import { writeFileSync } from "fs";
 
-var output = new easymidi.Output("BGC", true);
+let output = new easymidi.Output("I am not good at piano but I can code", true);
 let playing = false;
+
+let pitAdder = 0;
+
+export function setPit(pit: number) {
+  pitAdder = pit;
+}
 
 export function shutdown() {
   for (let i = 0; i < 127; i++) {
@@ -52,12 +57,16 @@ const toPitch = (note: Note) => {
 interface nt {
   pitch: number;
   type: "ON" | "OFF";
+  velo: number;
 }
 
 export async function player(midiFile: Midi) {
+  shutdown();
+
   let timemap: { [key: number]: nt[] } = {};
   let largest = 0;
   let timeset = new Set();
+
   return new Promise<void>(async (resolve, reject) => {
     playing = true;
     shutdown();
@@ -71,18 +80,19 @@ export async function player(midiFile: Midi) {
 
         timeset.add(st);
         timeset.add(ed);
-
         if (!timemap[st])
           timemap[st] = [
             {
               type: "ON",
               pitch: notepitch,
+              velo: note.velocity,
             },
           ];
         else
           timemap[st].push({
             type: "ON",
             pitch: notepitch,
+            velo: note.velocity,
           });
 
         if (!timemap[ed])
@@ -90,50 +100,55 @@ export async function player(midiFile: Midi) {
             {
               type: "OFF",
               pitch: notepitch,
+              velo: note.noteOffVelocity,
             },
           ];
         else
           timemap[ed].push({
             type: "OFF",
             pitch: notepitch,
+            velo: note.noteOffVelocity,
           });
       });
     });
 
-    const timeList: number[] = [...timeset] as any;
+    const timeList: number[] = ([...timeset] as any).sort(
+      (a: number, b: number) => a - b
+    );
 
     const playNt = (num: number) => {
       timemap[num].forEach((note) => {
         if (note.type == "ON")
           output.send("noteon", {
-            note: note.pitch,
-            velocity: 127,
+            note: note.pitch + pitAdder,
+            velocity: note.velo,
             channel: 0,
           });
         if (note.type == "OFF")
           output.send("noteoff", {
-            note: note.pitch,
-            velocity: 127,
+            note: note.pitch + pitAdder,
+            velocity: note.velo,
             channel: 0,
           });
       });
     };
 
-    let stT = Date.now();
     const runNext = (i: number) => {
+      let stPlay = Date.now();
+      console.log("Run", i);
       if (!playing) return;
       playNt(timeList[i]);
 
       if (i + 1 < timeList.length) {
-        console.log(
-          "REQUIRED",
-          timeList[i + 1] - timeList[i],
-          "DIFFCHANGE",
-          timeList[i + 1] - timeList[i] - (timeList[i + 1] + stT - Date.now())
-        );
-        setTimeout(runNext, timeList[i + 1] + stT - Date.now(), i + 1);
+        const DIFF = timeList[i + 1] - timeList[i];
+        const REALLY_DIFF = DIFF + stPlay - Date.now();
+
+        stPlay = Date.now();
+        console.log("EXPECTED", DIFF, "REALLY", REALLY_DIFF);
+        setTimeout(runNext, REALLY_DIFF, i + 1);
       } else {
         playing = false;
+        shutdown();
         return;
       }
     };
@@ -143,6 +158,7 @@ export async function player(midiFile: Midi) {
 
 export function stopper() {
   playing = false;
+  shutdown();
 }
 
 export function closer() {

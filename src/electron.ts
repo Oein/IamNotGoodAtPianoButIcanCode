@@ -2,14 +2,14 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { join } from "path";
 import axios from "axios";
 import { Midi } from "@tonejs/midi";
-import { closer, player, stopper } from ".";
+import { closer, player, setPit, stopper } from ".";
 
 let currentMidi: Midi;
 
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 516,
-    height: 238,
+    height: 277,
 
     webPreferences: {
       preload: join(__dirname, "preload.js"),
@@ -17,6 +17,14 @@ const createWindow = () => {
   });
 
   win.loadFile(join(__dirname, "..", "static", "index.html"));
+};
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 
   ipcMain.handle("url", (e, url: string) => {
     axios
@@ -27,6 +35,10 @@ const createWindow = () => {
         currentMidi = new Midi(v.data);
         e.sender.send("state", "Fetching done!");
       });
+  });
+
+  ipcMain.handle("pit", (e, d: number) => {
+    setPit(d);
   });
 
   ipcMain.handle("midi", (e, data: any) => {
@@ -40,14 +52,6 @@ const createWindow = () => {
 
   ipcMain.handle("stop", () => {
     stopper();
-  });
-};
-
-app.whenReady().then(() => {
-  createWindow();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
