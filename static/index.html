@@ -6,137 +6,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>나는 피아노는 못치지만 코딩은 잘하지</title>
 
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/build/Midi.min.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.5/axios.min.js"
-      integrity="sha512-nnNHpffPSgINrsR8ZAIgFUIMexORL5tPwsfktOTxVYSv+AUAILuFYWES8IHl+hhIhpFGlKvWFiz9ZEusrPcSBQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              clifford: "#da373d",
-            },
-          },
-        },
-      };
-    </script>
   </head>
-  <body
-    class="dark"
-    style="
-      background-color: rgb(17 24 39 / 1);
-      padding: 16px;
-      width: 500px;
-      height: 290px;
-      overflow: hidden;
-    "
-  >
-    <div class="relative w-full mr-3 formkit-field">
-      <div class="flex">
-        <span
-          class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600"
-        >
-          State
-        </span>
-        <input
-          type="text"
-          id="state"
-          disabled
-          class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        />
-      </div>
-    </div>
-    <label
-      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-      for="file_input"
-      style="margin-top: 8px"
-      >Upload file</label
-    >
-    <div data-style="clean" class="flex items-end">
-      <div
-        data-element="fields"
-        data-stacked="false"
-        class="flex items-center w-full max-w-md seva-fields formkit-fields"
-      >
-        <div class="relative w-full mr-3 formkit-field">
-          <input
-            id="file"
-            class="formkit-input block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            required=""
-            type="file"
-            accept=".mid, .midi"
-          />
-        </div>
-        <button data-element="submit" class="formkit-submit" id="loadFile">
-          <span
-            class="px-5 py-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg cursor-pointer hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >UseThis</span
-          >
-        </button>
-      </div>
+  <body>
+    <div class="col colst">
+      <div class="inpl">State</div>
+      <input type="text" id="state" disabled />
     </div>
 
-    <label
-      for="website-admin"
-      style="margin-top: 8px"
-      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-      >MIDI URL</label
-    >
-    <div data-style="clean" class="flex items-end">
-      <div
-        data-element="fields"
-        data-stacked="false"
-        class="flex items-center w-full max-w-md mb-3 seva-fields formkit-fields"
-      >
-        <div class="relative w-full mr-3 formkit-field">
-          <div class="flex">
-            <span
-              class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600"
-            >
-              URL
-            </span>
-            <input
-              type="text"
-              id="url"
-              class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="https://example.com/example.mid"
-            />
-          </div>
-        </div>
-        <button data-element="submit" class="formkit-submit" id="loadURL">
-          <span
-            class="px-5 py-3 text-sm font-medium text-center text-white bg-yellow-400 rounded-lg cursor-pointer hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600"
-            >UseThis</span
-          >
-        </button>
+    <div class="col colst">
+      <div class="inpl"><span>Upload File</span></div>
+      <div class="vcen">
+        <input
+          id="file"
+          class=""
+          required=""
+          type="file"
+          accept=".mid, .midi"
+        />
       </div>
+      <button id="loadFile" class="apply" style="background: #3892ff">
+        Apply
+      </button>
     </div>
-    <div class="grid grid-cols-2 gap-4">
-      <button
-        type="button"
-        id="play"
-        class="focus:outline-none text-white font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-400 dark:hover:bg-green-500 dark:focus:ring-green-600"
-      >
+
+    <div class="col colst">
+      <div class="inpl"><span>MIDI URL</span></div>
+      <input
+        type="text"
+        id="url"
+        placeholder="https://example.com/example.mid"
+      />
+      <button id="loadURL" class="apply" style="background: #26e054">
+        <span>Apply</span>
+      </button>
+    </div>
+
+    <div class="col">
+      <button type="button" style="background: #e7685c" class="fl" id="play">
         Play
       </button>
-      <button
-        type="button"
-        id="stop"
-        class="focus:outline-none text-white font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-400 dark:hover:bg-red-500 dark:focus:ring-red-600"
-      >
+      <button type="button" style="background: #d4ac0d" class="fl" id="stop">
         Stop
       </button>
     </div>
+    <style>
+      @import "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/variable/pretendardvariable.css";
+      @font-face {
+        font-family: LINESeedKR-Bd;
+        src: url(https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2)
+          format("woff2");
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: LINESeedKR-Rg;
+        src: url(https://cdn.jsdelivr.net/gh/wizfile/font/LINESeedKR-Rg.eot);
+        src: url(https://cdn.jsdelivr.net/gh/wizfile/font/LINESeedKR-Rg.woff)
+          format("woff");
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: LINESeedKR-Th;
+        src: url(https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Th.woff2)
+          format("woff2");
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      body {
+        font-family: LINESeedKR-Rg, Pretendard Variable, Pretendard,
+          -apple-system, BlinkMacSystemFont, system-ui, Roboto, Helvetica Neue,
+          Segoe UI, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic,
+          "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, sans-serif;
+      }
+
+      .bold {
+        font-family: LINESeedKR-Bd, Pretendard Variable, Pretendard,
+          -apple-system, BlinkMacSystemFont, system-ui, Roboto, Helvetica Neue,
+          Segoe UI, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic,
+          "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, sans-serif;
+      }
+
+      .inpl {
+        display: flex;
+        align-items: center;
+        background: #333;
+        padding: 7px 15px;
+        border: 2px solid #777;
+        border-radius: 6px 0px 0px 6px;
+      }
+
+      input {
+        border-radius: 0px 6px 6px 0px;
+        background: #333;
+        border: 2px solid #777;
+        border-left: none;
+        padding: 0px 10px;
+        flex: 1;
+        color: white;
+      }
+
+      .vcen {
+        display: flex;
+        align-items: center;
+
+        border-radius: 0px 6px 6px 0px;
+        background: #333;
+        border: 2px solid #777;
+        border-left: none;
+        padding: 0px 10px;
+        flex: 1;
+      }
+
+      .vcen > input {
+        border: none;
+        border-radius: none;
+        padding: 0px;
+        flex: unset;
+        margin: 0px;
+      }
+
+      .thin {
+        font-family: LINESeedKR-Th, Pretendard Variable, Pretendard,
+          -apple-system, BlinkMacSystemFont, system-ui, Roboto, Helvetica Neue,
+          Segoe UI, Apple SD Gothic Neo, Noto Sans KR, Malgun Gothic,
+          "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, sans-serif;
+      }
+
+      body {
+        background-color: rgb(17 24 39 / 1);
+        padding: 16px;
+        width: 500px;
+        height: fit-content;
+        overflow: hidden;
+        color: #fff;
+        box-sizing: border-box;
+      }
+
+      .col {
+        width: 100%;
+        height: fit-content;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        column-gap: 4px;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+      .colst {
+        align-items: stretch;
+        gap: 0px;
+      }
+
+      .fl {
+        flex: 1;
+      }
+
+      button {
+        cursor: pointer;
+        padding: 10px 15px;
+        outline: none;
+        border: none;
+        color: #fff;
+        border-radius: 6px;
+        margin: 2px;
+      }
+
+      div,
+      span,
+      label {
+        line-height: 1;
+      }
+
+      .apply {
+        margin-left: 5px;
+      }
+    </style>
+
     <script>
       let stopBtn = document.getElementById("stop");
       let playBtn = document.getElementById("play");

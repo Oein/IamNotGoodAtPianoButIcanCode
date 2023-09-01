@@ -8,9 +8,8 @@ let currentMidi: Midi;
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 500,
-    height: 310,
-    resizable: false,
+    width: 516,
+    height: 238,
 
     webPreferences: {
       preload: join(__dirname, "preload.js"),
